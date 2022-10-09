@@ -1,55 +1,89 @@
-"""_summary_
+"""entrainement à l'app1
 """
-
+import math
+from random import randint
 from ppoint import PPoint
 
 class Point:
-    """_summary_
+    """un Point à deux coordonnées
     """
     def __init__(self, abscisse, ordonnee):
-        """_summary_
+        """constructeur de Point
 
         Parameters
         ----------
-        abscisse : _type_
-            _description_
-        ordonnee : _type_
-            _description_
+        abscisse : float
+            abscisse
+        ordonnee : float
+            ordonnee
         """
         self.abscisse = abscisse
         self.ordonnee = ordonnee
 
-    def falls_in_rectangle(self, lowleft, upright):
-        """_summary_
+    def falls_in_rectangle(self, rectangle):
+        """le point fait-il partie d'un rectangle ?
 
         Parameters
         ----------
-        lowleft : _type_
-            _description_
-        upright : _type_
-            _description_
+        rectangle: Rectangle
+            le rectangle à comparer
         """
-        if lowleft[0] < self.abscisse < upright[0] \
-        and lowleft[1] < self.ordonnee < upright[1]:
-            return True
-        else:
-            return False
+        return bool(rectangle.lowleft.abscisse < self.abscisse < rectangle.upright.abscisse \
+        and rectangle.lowleft.ordonnee < self.ordonnee < rectangle.upright.ordonnee)
+
+    def distance(self, point):
+        """Calcule la distance du point courant à un autre point dont
+        les coordonnées sont passées en argument
+
+        Parameters
+        ----------
+        abscisse_autre : int
+            abscisse de l'autre point
+        ordonnee_autre : int
+            ordonnee de l'autre point
+        """
+        ecart_abscisses = (self.abscisse - point.abscisse)**2
+        ecart_ordonnees = (self.ordonnee - point.ordonnee)**2
+        return math.sqrt(ecart_abscisses + ecart_ordonnees)
 
 class Rectangle:
-    """_summary_
+    """classe Rectangle défini en deux points
     """
-    def __init__(self, point_a, point_b):
+    def __init__(self, lowleft, upright):
+        """construit un rectangle
+
+        Parameters
+        ----------
+        lowleft : Point
+            point en bas à gauche du rectangle
+        upright : Point
+            point en haut à droite du rectangle
+        """
+        self.lowleft = lowleft
+        self.upright = upright
+
+    def area(self):
+        """_summary_
+        """
+        return (math.fabs( self.upright.abscisse - self.lowleft.abscisse) * (math.fabs(self.upright.ordonnee - self.lowleft.ordonnee)))
+
+class Person:
+    """classe Personne avec un nom et un age
+    """
+    def __init__(self, name, age):
         """_summary_
 
         Parameters
         ----------
-        point_a : int
-            _description_
-        point_b : int
-            _description_
+        name : str
+            nom
+        age : int
+            age
         """
-        self.point_a = point_a
-        self.point_b = point_b
+        self.name = name
+        self.age =age
+
+
 
 point1 = Point(10, 20)
 print(type(point1))
@@ -57,27 +91,29 @@ print(type(point1))
 point2 = PPoint(1, 2)
 print(type(point2))
 print(point1.abscisse)
-
-
-class Person:
-    """_summary_
-    """
-    def __init__(self, name, age):
-        """_summary_
-
-        Parameters
-        ----------
-        name : _type_
-            _description_
-        age : _type_
-            _description_
-        """
-        self.name = name
-        self.age =age
-
 person1 = Person("John", 65)
 print(type(person1))
 print(person1.name)
 
 point3 = Point(3, 4)
-print(point3.falls_in_rectangle((5,6),(7,9)))
+print(point1.distance(point3))
+rectanglex = Rectangle(Point(5,6), Point(7,9))
+print(point3.falls_in_rectangle(rectanglex))
+
+rectangle_int = Rectangle(Point(randint(0,9), randint(0, 9)),
+                          Point(randint(10, 19),  randint(10, 19)))
+
+print("Rectangle Coordinates: ",
+      rectangle_int.lowleft.abscisse, ",",
+      rectangle_int.lowleft.ordonnee, " and ",
+      rectangle_int.upright.abscisse, ",",
+      rectangle_int.upright.ordonnee)
+
+user_point = Point(float(input("Guess X: ")),
+                   float(input("Guess Y: ")))
+user_area  =float(input("Guess rectangle area: "))
+
+print("Your point was inside rectangle: ",
+      user_point.falls_in_rectangle(rectangle_int))
+print("Your area was off by: ",
+      rectangle_int.area() - user_area)
